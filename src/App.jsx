@@ -14,29 +14,50 @@ function App() {
   // TODO 1: Viết hàm thêm công việc mới
   const handleAddTask = (e) => {
     e.preventDefault();
-    // Bổ sung logic kiểm tra rỗng, tạo object mới và cập nhật mảng tasks
-    // Nhớ reset form sau khi thêm
+    // Bổ sung logic kiểm tra rỗng
+    if (taskName.trim() === '') {
+      alert('Vui lòng nhập tên công việc!');
+      return;
+    }
+    
+    // Tạo object mới
+    const newTask = {
+      id: Date.now(),
+      name: taskName,
+      priority: taskPriority,
+      completed: false
+    };
+
+    // Cập nhật mảng tasks và reset form
+    setTasks([...tasks, newTask]);
+    setTaskName('');
+    setTaskPriority('Thấp');
   };
 
   // TODO 2: Viết hàm đổi trạng thái hoàn thành của 1 công việc
   const handleToggleTask = (id) => {
     // Tìm task theo id và đảo ngược giá trị completed
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ));
   };
 
   // TODO 3: Viết hàm xóa 1 công việc
   const handleDeleteTask = (id) => {
     // Lọc bỏ task có id tương ứng
+    setTasks(tasks.filter(task => task.id !== id));
   };
 
   // TODO 4: Viết hàm xóa tất cả các công việc đã hoàn thành
   const clearCompletedTasks = () => {
     // Lọc và giữ lại những task chưa hoàn thành
+    setTasks(tasks.filter(task => !task.completed));
   };
 
   // TODO 5: Tính toán các con số thống kê từ mảng tasks hiện tại
-  const totalTasks = 0; // Thay thế bằng logic đếm tổng số task
-  const completedTasks = 0; // Thay thế bằng logic đếm task đã xong
-  const pendingTasks = 0; // Thay thế bằng logic đếm task chưa xong
+  const totalTasks = tasks.length; 
+  const completedTasks = tasks.filter(task => task.completed).length; 
+  const pendingTasks = totalTasks - completedTasks; 
 
   return (
     <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif' }}>
@@ -99,7 +120,7 @@ function App() {
             </div>
             <div>
               <button onClick={() => handleToggleTask(task.id)} style={{ marginRight: '8px', cursor: 'pointer' }}>
-                {task.completed ? 'Hoàn tác' : 'Xong'}
+                Đổi trạng thái
               </button>
               <button onClick={() => handleDeleteTask(task.id)} style={{ background: '#dc3545', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}>
                 Xóa
